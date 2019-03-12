@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -120,15 +121,22 @@ public class MainActivity extends AppCompatActivity {
     public void calcAge(LocalDate birthDate, LocalDate deathDate, TextView txtResult){
         boolean validInput=true;
         long diffDays = DAYS.between(birthDate, deathDate);
-        //Period period = Period.between(birthDate, deathDate);
+
         if(diffDays<0){
             validInput=false;
             txtResult.setTextColor(Color.RED);
             txtResult.setText("Invalid entry. Birth date after death date");
             txtResult.setVisibility(View.VISIBLE);
         }
+        int countLeapYears=0;
+        for (int i=birthDate.getYear(); i<=deathDate.getYear(); i++){
+            GregorianCalendar cal=new GregorianCalendar();
+            if(cal.isLeapYear(i)){
+                countLeapYears++;
+            }
+        }
         int years=(int) (diffDays/365);
-        int days=(int)(diffDays%365)-(int)Math.round(years*0.25);
+        int days=(int)(diffDays%365)-countLeapYears;
         if(validInput) {
             txtResult.setTextColor(Color.BLACK);
             txtResult.setText("This person is " + years + " years and " + days + " days old.");
