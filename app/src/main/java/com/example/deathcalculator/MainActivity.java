@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.*;
 
 
 /**
@@ -120,23 +120,16 @@ public class MainActivity extends AppCompatActivity {
      */
     public void calcAge(LocalDate birthDate, LocalDate deathDate, TextView txtResult){
         boolean validInput=true;
-        long diffDays = DAYS.between(birthDate, deathDate);
-
-        if(diffDays<0){
+        if(birthDate.isAfter(deathDate)){
             validInput=false;
             txtResult.setTextColor(Color.RED);
             txtResult.setText("Invalid entry. Birth date after death date");
             txtResult.setVisibility(View.VISIBLE);
         }
-        int countLeapYears=0;
-        for (int i=birthDate.getYear(); i<=deathDate.getYear(); i++){
-            GregorianCalendar cal=new GregorianCalendar();
-            if(cal.isLeapYear(i)){
-                countLeapYears++;
-            }
-        }
-        int years=(int) (diffDays/365);
-        int days=(int)(diffDays%365)-countLeapYears;
+        //From kyle workmen on lovelace
+        long years = birthDate.until(deathDate, YEARS);
+        birthDate = birthDate.plusYears(years);
+        long days = birthDate.until(deathDate, DAYS);
         if(validInput) {
             txtResult.setTextColor(Color.BLACK);
             txtResult.setText("This person is " + years + " years and " + days + " days old.");
